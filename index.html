@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mianatra Malagasy — Malagasy Tutor</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#172230; --panel2:#1e2c3d; --ink:#e8eef5; --muted:#9fb0c3;
+    --accent:#e23b3b; --accent2:#2e8b57; --gold:#f4b740; --line:#2a3a4d;
+    --good:#36c07a; --bad:#ff6b6b; --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,#0f1720,#13202e 60%,#0f1720);color:var(--ink);min-height:100vh}
+  header{padding:18px 22px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--line);
+    background:rgba(15,23,32,.7);backdrop-filter:blur(6px);position:sticky;top:0;z-index:20}
+  .flag{width:46px;height:32px;border-radius:5px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+  .flag .w{flex:1;background:#fff}.flag .row{flex:2;display:flex}.flag .r{flex:1;background:var(--accent)}.flag .g{flex:1;background:var(--accent2)}
+  h1{font-size:20px;margin:0;letter-spacing:.3px}
+  h1 small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+  .xp{margin-left:auto;text-align:right;font-size:13px;color:var(--muted)}
+  .xp b{color:var(--gold);font-size:18px}
+  .bar{height:6px;border-radius:99px;background:var(--panel2);margin-top:5px;width:160px;overflow:hidden}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#ffd87a);width:0%}
+  main{max-width:980px;margin:0 auto;padding:22px}
+  nav.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  nav.tabs button{background:var(--panel);color:var(--muted);border:1px solid var(--line);padding:9px 15px;
+    border-radius:99px;cursor:pointer;font-size:14px;transition:.15s}
+  nav.tabs button:hover{color:var(--ink)}
+  nav.tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}
+  .level-pill{display:inline-block;font-size:11px;padding:3px 10px;border-radius:99px;background:var(--panel2);color:var(--gold);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase}
+  h2{margin:.2em 0 .5em;font-size:22px}
+  h3{margin:1.2em 0 .4em;font-size:16px;color:var(--gold)}
+  p{line-height:1.6;color:#d4deea}
+  .mg{color:#fff;font-weight:600}
+  .en{color:var(--muted)}
+  .ph{color:var(--gold);font-style:italic;font-size:.92em}
+  table{width:100%;border-collapse:collapse;margin:10px 0}
+  td,th{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);font-size:15px;vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  .speak{background:none;border:1px solid var(--line);color:var(--gold);border-radius:8px;cursor:pointer;padding:5px 9px;font-size:13px}
+  .speak:hover{background:var(--panel2)}
+  .btn{background:var(--accent);color:#fff;border:none;padding:11px 20px;border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;transition:.15s}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.alt{background:var(--accent2)}
+  .btn.ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .lessonlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .ltile{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:.15s;position:relative}
+  .ltile:hover{transform:translateY(-2px);border-color:var(--accent)}
+  .ltile .ico{font-size:26px}
+  .ltile h4{margin:8px 0 4px;font-size:16px}
+  .ltile small{color:var(--muted)}
+  .ltile .done{position:absolute;top:12px;right:12px;color:var(--good);font-size:18px}
+  .flash{perspective:1200px}
+  .flashcard{height:230px;cursor:pointer;position:relative;transition:transform .5s;transform-style:preserve-3d}
+  .flashcard.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border-radius:16px;border:1px solid var(--line);background:var(--panel2);padding:20px;text-align:center}
+  .face.back{transform:rotateY(180deg);background:#14202d}
+  .face .big{font-size:34px;font-weight:700;color:#fff}
+  .face .sub{color:var(--gold);margin-top:8px;font-style:italic}
+  .quizopt{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    padding:13px 16px;border-radius:10px;margin:8px 0;cursor:pointer;font-size:15px;transition:.12s}
+  .quizopt:hover{border-color:var(--accent)}
+  .quizopt.correct{background:rgba(54,192,122,.18);border-color:var(--good)}
+  .quizopt.wrong{background:rgba(255,107,107,.16);border-color:var(--bad)}
+  .quizopt:disabled{cursor:default}
+  input.typed{width:100%;padding:13px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:#fff;font-size:16px;margin:8px 0}
+  input.typed:focus{outline:none;border-color:var(--accent)}
+  .feedback{padding:11px 14px;border-radius:10px;margin:10px 0;font-size:14px;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:rgba(54,192,122,.15);color:#a7ecc6;border:1px solid var(--good)}
+  .feedback.no{background:rgba(255,107,107,.13);color:#ffc3c3;border:1px solid var(--bad)}
+  .progressbar{height:8px;border-radius:99px;background:var(--panel2);overflow:hidden;margin:14px 0}
+  .progressbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));width:0%;transition:.3s}
+  .row-flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .mic{width:64px;height:64px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:26px;cursor:pointer;box-shadow:var(--shadow);transition:.15s}
+  .mic.listening{animation:pulse 1.1s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(226,59,59,.6)}70%{box-shadow:0 0 0 18px rgba(226,59,59,0)}100%{box-shadow:0 0 0 0 rgba(226,59,59,0)}}
+  .pill-result{font-size:14px;padding:6px 12px;border-radius:99px;background:var(--panel2);display:inline-block}
+  .scoreboard{display:flex;gap:14px;flex-wrap:wrap}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:120px}
+  .stat .n{font-size:26px;font-weight:700;color:var(--gold)}
+  .stat .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .hint{font-size:13px;color:var(--muted);margin-top:6px}
+  .badge{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:4px;font-size:13px}
+  .badge.earned{border-color:var(--gold);color:var(--gold)}
+  .center{text-align:center}
+  .notice{font-size:12px;color:var(--muted);background:var(--panel2);border-left:3px solid var(--gold);padding:10px 14px;border-radius:8px;margin:10px 0}
+  a.link{color:var(--gold)}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:30px}
+  @media(max-width:560px){.xp .bar{width:110px}h1{font-size:17px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="flag"><div class="w"></div><div class="row"><div class="r"></div><div class="g"></div></div></div>
+  <div>
+    <h1>Mianatra Malagasy <small>Learn Malagasy — from zero to conversational</small></h1>
+  </div>
+  <div class="xp">
+    <div>Level <b id="hdrLevel">1</b> · <span id="hdrXP">0</span> XP</div>
+    <div class="bar"><i id="hdrBar"></i></div>
+  </div>
+</header>
+
+<main>
+  <nav class="tabs" id="tabs">
+    <button data-tab="learn" class="active">📖 Learn</button>
+    <button data-tab="flash">🃏 Flashcards</button>
+    <button data-tab="quiz">✍️ Quiz</button>
+    <button data-tab="listen">🎧 Listening</button>
+    <button data-tab="speak">🎤 Speaking</button>
+    <button data-tab="test">🏆 Test</button>
+    <button data-tab="progress">📊 Progress</button>
+  </nav>
+
+  <section id="view"></section>
+</main>
+
+<footer>Mianatra Malagasy · Built as a personal tutor · Progress saved in your browser.</footer>
+
+<script>
+/* ============================================================
+   MALAGASY TUTOR — content + engine
+   Pronunciation guides use simple English-reader phonetics.
+   Malagasy quick rules baked into Lesson 1.
+============================================================ */
+
+const CURRICULUM = [
+  /* ---------- LEVEL 1: FOUNDATIONS ---------- */
+  {
+    id:"l1", level:1, icon:"🔤", title:"Alphabet & Sounds",
+    intro:"Malagasy uses the Latin alphabet (no c, q, u, w, x). Spelling is phonetic — once you know the sounds, you can read anything.",
+    notes:[
+      ["o","pronounced “oo” as in <i>boot</i>","mosary = MOO-sar"],
+      ["i / y","“ee”; <b>y</b> is used at the end of words","misy = MEE-sy"],
+      ["e","“eh” as in <i>bet</i>","be = beh"],
+      ["j","sounds like “dz”","jamba = DZAM-ba"],
+      ["g","always hard, as in <i>go</i>","gana = GA-na"],
+      ["tr / dr","a buzzy retroflex “tr”/“dr”","trano = TRA-noo"],
+      ["ao","“ow” as in <i>cow</i>","ahoana = a-HOO-ah-na"]
+    ],
+    proTip:"Malagasy speakers swallow the final syllable. <b>misaotra</b> sounds like “mi-SOW-tch”, <b>veloma</b> like “vel-OOM”. Stress usually falls on the second-to-last syllable.",
+    vocab:[
+      ["a","ah (as in father)","the sound a"],
+      ["o","oo (as in boot)","the sound o"],
+      ["e","eh (as in bet)","the sound e"],
+      ["i","ee (as in see)","the sound i"]
+    ]
+  },
+  {
+    id:"l2", level:1, icon:"👋", title:"Greetings",
+    intro:"The essentials for saying hello, goodbye, and being polite.",
+    proTip:"“Manao ahoana” literally means “How are you doing?” and works for hello in most settings.",
+    vocab:[
+      ["Manao ahoana","ma-NOW a-HOO-ah-na","Hello / How are you?"],
+      ["Salama","sa-LA-ma","Hi / Hello (also: healthy, well)"],
+      ["Tsara fa misaotra","tsa-ra fa mi-SOW-tch","I'm fine, thank you"],
+      ["Veloma","vel-OOM","Goodbye"],
+      ["Misaotra","mi-SOW-tch","Thank you"],
+      ["Tsy misy fisaorana","tsy mi-sy fi-sow-RA-na","You're welcome"],
+      ["Azafady","a-za-FAD","Please / Excuse me / Sorry"],
+      ["Eny","EH-ny","Yes"],
+      ["Tsia","TSEE-a","No"]
+    ]
+  },
+  {
+    id:"l3", level:1, icon:"🔢", title:"Numbers 1–10",
+    intro:"Counting from one to ten. Numbers are the same whether counting people, things, or money (ariary).",
+    proTip:"“folo” (10) is the base for the teens and tens later on.",
+    vocab:[
+      ["iray","ee-RYE","one"],
+      ["roa","ROO-a","two"],
+      ["telo","TEH-loo","three"],
+      ["efatra","eh-FA-tch","four"],
+      ["dimy","DEE-my","five"],
+      ["enina","eh-NEE-na","six"],
+      ["fito","FEE-too","seven"],
+      ["valo","VA-loo","eight"],
+      ["sivy","SEE-vy","nine"],
+      ["folo","FOO-loo","ten"]
+    ]
+  },
+  {
+    id:"l4", level:1, icon:"🙋", title:"Introducing Yourself",
+    intro:"Ask names and introduce yourself — the heart of any first conversation.",
+    proTip:"“-ko” means “my”, “-nao” means “your”. So anarako = my name, anaranao = your name.",
+    vocab:[
+      ["Iza no anaranao?","EE-za noo a-na-RA-now","What is your name?"],
+      ["Ny anarako dia...","ny a-na-RA-koo dee-a","My name is..."],
+      ["Avy aiza ianao?","A-vy EYE-za ya-NOW","Where are you from?"],
+      ["Avy any Amerika aho","A-vy A-ny a-MEH-ri-ka A-oo","I am from America"],
+      ["Faly mahafantatra anao","FA-ly ma-ha-FAN-ta-tch a-NOW","Nice to meet you"],
+      ["Aho","A-oo","I / me"],
+      ["Ianao","ya-NOW","you"]
+    ]
+  },
+
+  /* ---------- LEVEL 2: EVERYDAY ---------- */
+  {
+    id:"l5", level:2, icon:"🎨", title:"Colors",
+    intro:"Common colors. Adjectives in Malagasy come after the noun: trano mena = red house.",
+    proTip:"Word order: noun first, then color. “fiara fotsy” = white car.",
+    vocab:[
+      ["mena","MEH-na","red"],
+      ["maitso","MY-tsoo","green"],
+      ["manga","MANG-ga","blue"],
+      ["mavo","MA-voo","yellow"],
+      ["fotsy","FOO-tsy","white"],
+      ["mainty","MY-nty","black"],
+      ["volontany","voo-loon-TA-ny","brown"]
+    ]
+  },
+  {
+    id:"l6", level:2, icon:"👨‍👩‍👧", title:"Family",
+    intro:"Words for family members — central to Malagasy culture (fianakaviana).",
+    proTip:"“Ray aman-dreny” (father-and-mother) is a respectful term for parents and elders.",
+    vocab:[
+      ["fianakaviana","fya-na-ka-VEE-na","family"],
+      ["ray","rye","father"],
+      ["reny","REH-ny","mother"],
+      ["zaza","ZA-za","child"],
+      ["zandry","ZAN-dry","younger sibling"],
+      ["zoky","ZOO-ky","older sibling"],
+      ["raibe","rye-BEH","grandfather"],
+      ["renibe","reh-ni-BEH","grandmother"],
+      ["vady","VA-dy","spouse"]
+    ]
+  },
+  {
+    id:"l7", level:2, icon:"🍚", title:"Food & Eating",
+    intro:"Rice (vary) is eaten at nearly every meal in Madagascar. Here's how to talk about food.",
+    proTip:"“Mihinana” = to eat. “Misotro” = to drink. To say you want something: “Mila ... aho.”",
+    vocab:[
+      ["vary","VA-ry","rice"],
+      ["rano","RA-noo","water"],
+      ["hena","HEH-na","meat"],
+      ["trondro","TROON-droo","fish"],
+      ["voankazo","voo-an-KA-zoo","fruit"],
+      ["mihinana","mi-hi-NA-na","to eat"],
+      ["misotro","mi-SOO-tch","to drink"],
+      ["noana","NOO-a-na","hungry"],
+      ["mangetaheta","man-geh-ta-HEH-ta","thirsty"],
+      ["matsiro","ma-TSEE-roo","delicious"]
+    ]
+  },
+  {
+    id:"l8", level:2, icon:"❓", title:"Question Words",
+    intro:"The key words that unlock questions: who, what, where, when, why, how.",
+    proTip:"Most questions start with the question word, then the rest of the sentence.",
+    vocab:[
+      ["iza","EE-za","who"],
+      ["inona","EE-noo-na","what"],
+      ["aiza","EYE-za","where"],
+      ["rahoviana","ra-HOO-vya-na","when"],
+      ["nahoana","na-HOO-a-na","why"],
+      ["ahoana","a-HOO-a-na","how"],
+      ["firy","FEE-ry","how many"],
+      ["ohatrinona","oo-a-TREE-noo-na","how much (price)"]
+    ]
+  },
+
+  /* ---------- LEVEL 3: CONVERSATION ---------- */
+  {
+    id:"l9", level:3, icon:"🗣️", title:"Useful Verbs",
+    intro:"Common verbs. Malagasy verbs often start with “m-” in the present tense.",
+    proTip:"Present “m-”, past “n-”, future “h-”. mandeha (go) → nandeha (went) → handeha (will go).",
+    vocab:[
+      ["mandeha","man-DEH","to go / to walk"],
+      ["mijery","mi-DZEH-ry","to look / watch"],
+      ["miteny","mi-TEH-ny","to speak"],
+      ["mahay","ma-HYE","to know / be able"],
+      ["tia","TEE-a","to like / love"],
+      ["mividy","mi-VEE-dy","to buy"],
+      ["matory","ma-TOO-ry","to sleep"],
+      ["miasa","mi-A-sa","to work"]
+    ]
+  },
+  {
+    id:"l10", level:3, icon:"📅", title:"Days & Time",
+    intro:"Days of the week and basic time words for making plans.",
+    proTip:"Days come from Arabic via Swahili. “androany” = today, a great word to know.",
+    vocab:[
+      ["Alatsinainy","a-la-tsi-NYE-ny","Monday"],
+      ["Talata","ta-LA-ta","Tuesday"],
+      ["Alarobia","a-la-roo-BEE-a","Wednesday"],
+      ["Alakamisy","a-la-ka-MEE-sy","Thursday"],
+      ["Zoma","ZOO-ma","Friday"],
+      ["Sabotsy","sa-BOO-tsy","Saturday"],
+      ["Alahady","a-la-HA-dy","Sunday"],
+      ["androany","an-droo-A-ny","today"],
+      ["rahampitso","ra-am-PEE-tsoo","tomorrow"],
+      ["omaly","oo-MA-ly","yesterday"]
+    ]
+  },
+  {
+    id:"l11", level:3, icon:"🧭", title:"Getting Around",
+    intro:"Phrases for directions, transport, and asking for help in town.",
+    proTip:"“Aiza ny...?” = Where is the...? A reliable template for finding anything.",
+    vocab:[
+      ["Aiza ny efitrano fidiovana?","EYE-za ny eh-fi-TRA-noo fi-dyoo-VA-na","Where is the bathroom?"],
+      ["havanana","ha-va-NA-na","right (direction)"],
+      ["havia","ha-VEE-a","left"],
+      ["mahitsy","ma-HEE-tsy","straight ahead"],
+      ["lalana","LA-la-na","road / street"],
+      ["fiara","fee-A-ra","car"],
+      ["ohatrinona ny saran-dalana?","oo-a-TREE-noo-na ny sa-ran-DA-la-na","how much is the fare?"]
+    ]
+  },
+  {
+    id:"l12", level:3, icon:"💬", title:"Survival Phrases",
+    intro:"High-value phrases that get you through real conversations.",
+    proTip:"“Tsy mahay teny malagasy aho” = I don't speak Malagasy — useful and gets a smile.",
+    vocab:[
+      ["Tsy azoko","tsy A-zoo-koo","I don't understand"],
+      ["Avereno azafady","a-veh-REH-noo a-za-FAD","Please repeat"],
+      ["Miadana kely","mi-A-da-na KEH-ly","Slowly please"],
+      ["Inona no atao hoe ... ?","EE-noo-na noo a-TOW hweh","How do you say ... ?"],
+      ["Mila fanampiana aho","MEE-la fa-nam-PEE-na A-oo","I need help"],
+      ["Mahay teny anglisy ve ianao?","ma-HYE TEH-ny an-GLEE-sy veh ya-NOW","Do you speak English?"]
+    ]
+  }
+];
+
+/* flatten all vocab with lesson + level tags for quizzes/tests */
+const ALL=[];
+CURRICULUM.forEach(les=>les.vocab.forEach(v=>ALL.push({mg:v[0],ph:v[1],en:v[2],level:les.level,lesson:les.id})));
+
+/* -------------------- STATE -------------------- */
+const KEY="malagasy_tutor_v1";
+let S=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){return fresh()}}
+function fresh(){return{xp:0,done:{},quizBest:{},testPass:{},streak:0,answered:0,correct:0,badges:{}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(S));renderHeader()}
+function addXP(n){S.xp+=n;checkBadges();save()}
+function levelFromXP(x){return Math.max(1,Math.floor(x/150)+1)}
+function checkBadges(){
+  if(S.xp>=50)S.badges.first=1;
+  if(Object.keys(S.done).length>=6)S.badges.half=1;
+  if(Object.keys(S.done).length>=CURRICULUM.length)S.badges.allLessons=1;
+  if(Object.keys(S.testPass).length>=3)S.badges.tested=1;
+  if(S.correct>=50)S.badges.fifty=1;
+}
+
+/* -------------------- SPEECH -------------------- */
+let MG_VOICE=null;
+function pickVoice(){
+  const vs=speechSynthesis.getVoices();
+  MG_VOICE=vs.find(v=>/mg|malagasy/i.test(v.lang))||
+           vs.find(v=>/fr/i.test(v.lang))|| /* French phonics closest fallback */
+           vs[0]||null;
+}
+if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=pickVoice;pickVoice();}
+function speak(text){
+  if(!('speechSynthesis'in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  if(MG_VOICE){u.voice=MG_VOICE;u.lang=MG_VOICE.lang;}
+  u.rate=.85;u.pitch=1;
+  speechSynthesis.speak(u);
+}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+
+/* -------------------- HELPERS -------------------- */
+const $=s=>document.querySelector(s);
+const view=$("#view");
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function norm(s){return s.toLowerCase().replace(/[^a-z\s]/g,'').replace(/\s+/g,' ').trim()}
+function renderHeader(){
+  const lv=levelFromXP(S.xp);
+  $("#hdrLevel").textContent=lv;
+  $("#hdrXP").textContent=S.xp;
+  const into=S.xp%150;$("#hdrBar").style.width=(into/150*100)+"%";
+}
+
+/* -------------------- ROUTER -------------------- */
+const tabs=document.querySelectorAll("#tabs button");
+tabs.forEach(b=>b.onclick=()=>{tabs.forEach(x=>x.classList.remove("active"));b.classList.add("active");route(b.dataset.tab)});
+function route(tab){({learn:Learn,flash:Flash,quiz:Quiz,listen:Listen,speak:Speak,test:Test,progress:Progress}[tab])()}
+
+/* ==================== LEARN ==================== */
+let curLesson=null;
+function Learn(){
+  if(curLesson){return LessonDetail(curLesson)}
+  let html=`<div class="card"><h2>Lessons</h2><p>Twelve lessons across three levels. Tap a lesson to study, then mark it complete to earn XP. Tap 🔊 to hear any word.</p>`;
+  [1,2,3].forEach(lv=>{
+    html+=`<h3>Level ${lv} — ${["","Foundations","Everyday Words","Conversation"][lv]}</h3><div class="lessonlist">`;
+    CURRICULUM.filter(l=>l.level===lv).forEach(l=>{
+      html+=`<div class="ltile" onclick="openLesson('${l.id}')">
+        ${S.done[l.id]?'<span class="done">✓</span>':''}
+        <div class="ico">${l.icon}</div><h4>${esc(l.title)}</h4>
+        <small>${l.vocab.length} words</small></div>`;
+    });
+    html+=`</div>`;
+  });
+  html+=`</div>`;
+  view.innerHTML=html;
+}
+window.openLesson=id=>{curLesson=id;Learn()};
+function LessonDetail(id){
+  const l=CURRICULUM.find(x=>x.id===id);
+  let rows=l.vocab.map(v=>`<tr>
+      <td class="mg">${esc(v[0])}</td>
+      <td class="ph">${esc(v[1])}</td>
+      <td class="en">${esc(v[2])}</td>
+      <td><button class="speak" onclick="speak('${esc(v[0]).replace(/'/g,"\\'")}')">🔊</button></td>
+    </tr>`).join("");
+  let notes="";
+  if(l.notes){
+    notes=`<h3>Sound guide</h3><table><tr><th>Letter</th><th>Sound</th><th>Example</th></tr>`+
+      l.notes.map(n=>`<tr><td class="mg">${n[0]}</td><td>${n[1]}</td><td class="ph">${esc(n[2])}</td></tr>`).join("")+`</table>`;
+  }
+  view.innerHTML=`<div class="card">
+    <span class="level-pill">Level ${l.level}</span>
+    <h2>${l.icon} ${esc(l.title)}</h2>
+    <p>${l.intro}</p>
+    ${notes}
+    <h3>Vocabulary</h3>
+    <table><tr><th>Malagasy</th><th>Say it</th><th>English</th><th></th></tr>${rows}</table>
+    ${l.proTip?`<div class="notice">💡 <b>Pro tip:</b> ${l.proTip}</div>`:''}
+    <div class="row-flex" style="margin-top:16px">
+      <button class="btn" onclick="completeLesson('${l.id}')">${S.done[l.id]?'✓ Completed — review again':'Mark complete (+20 XP)'}</button>
+      <button class="btn ghost" onclick="backToLessons()">← All lessons</button>
+    </div>
+  </div>`;
+}
+window.completeLesson=id=>{if(!S.done[id]){S.done[id]=1;addXP(20);}else{save()}LessonDetail(id)};
+window.backToLessons=()=>{curLesson=null;Learn()};
+
+/* ==================== FLASHCARDS ==================== */
+let fcPool=[],fcIdx=0,fcFlipped=false;
+function Flash(){
+  view.innerHTML=`<div class="card">
+    <h2>🃏 Flashcards</h2>
+    <p>Choose a deck, then tap the card to flip between Malagasy and English. Self-rate to keep moving.</p>
+    <div class="row-flex" id="deckpick"></div>
+    <div id="fcArea" style="margin-top:18px"></div>
+  </div>`;
+  const dp=$("#deckpick");
+  [["All words",()=>ALL],
+   ["Level 1",()=>ALL.filter(w=>w.level===1)],
+   ["Level 2",()=>ALL.filter(w=>w.level===2)],
+   ["Level 3",()=>ALL.filter(w=>w.level===3)]].forEach(([name,fn])=>{
+    const b=document.createElement("button");b.className="btn ghost";b.textContent=name;
+    b.onclick=()=>{fcPool=shuffle(fn());fcIdx=0;fcFlipped=false;drawCard()};dp.appendChild(b);
+  });
+}
+function drawCard(){
+  const area=$("#fcArea");
+  if(!fcPool.length){area.innerHTML=`<p class="hint">Pick a deck above to begin.</p>`;return}
+  const w=fcPool[fcIdx];
+  area.innerHTML=`
+    <div class="flash">
+      <div class="flashcard ${fcFlipped?'flipped':''}" id="fcard" onclick="flipCard()">
+        <div class="face front"><div class="big">${esc(w.mg)}</div><div class="sub">${esc(w.ph)}</div></div>
+        <div class="face back"><div class="big">${esc(w.en)}</div></div>
+      </div>
+    </div>
+    <div class="row-flex" style="margin-top:14px;justify-content:center">
+      <button class="speak" onclick="event.stopPropagation();speak('${esc(w.mg).replace(/'/g,"\\'")}')">🔊 Hear</button>
+      <button class="btn ghost" onclick="flipCard()">↻ Flip</button>
+      <button class="btn alt" onclick="nextCard(true)">✓ Knew it</button>
+      <button class="btn" onclick="nextCard(false)">✗ Review</button>
+    </div>
+    <p class="center hint">Card ${fcIdx+1} of ${fcPool.length}</p>`;
+}
+window.flipCard=()=>{fcFlipped=!fcFlipped;$("#fcard").classList.toggle("flipped")};
+window.nextCard=knew=>{
+  if(knew)addXP(2);
+  fcIdx++;if(fcIdx>=fcPool.length){
+    $("#fcArea").innerHTML=`<div class="center"><h3>Deck complete! 🎉</h3><p class="hint">Nice work. Pick another deck or try a quiz.</p></div>`;return;
+  }
+  fcFlipped=false;drawCard();
+};
+
+/* ==================== QUIZ ==================== */
+let qz=null;
+function Quiz(){
+  view.innerHTML=`<div class="card">
+    <h2>✍️ Quiz</h2>
+    <p>Mixed quiz: multiple choice + typing. 8 questions. Choose a level.</p>
+    <div class="row-flex" id="qpick"></div>
+    <div id="qArea" style="margin-top:18px"></div>
+  </div>`;
+  const qp=$("#qpick");
+  [["Level 1",1],["Level 2",2],["Level 3",3],["Mixed (all)",0]].forEach(([n,lv])=>{
+    const b=document.createElement("button");b.className="btn ghost";b.textContent=n;
+    b.onclick=()=>startQuiz(lv);qp.appendChild(b);
+  });
+}
+function startQuiz(lv){
+  const pool=lv?ALL.filter(w=>w.level===lv):ALL;
+  const qs=shuffle(pool).slice(0,8).map((w,i)=>({w,type:i%3===2?'type':'mc'}));
+  qz={qs,i:0,score:0,lv};
+  drawQ();
+}
+function drawQ(){
+  const a=$("#qArea");
+  if(qz.i>=qz.qs.length){
+    const pct=Math.round(qz.score/qz.qs.length*100);
+    const key="L"+qz.lv;
+    if(!S.quizBest[key]||pct>S.quizBest[key]){S.quizBest[key]=pct}
+    addXP(qz.score*5);
+    a.innerHTML=`<div class="center"><h3>${pct>=80?'Tsara be! 🌟':pct>=50?'Good effort!':'Keep practicing!'}</h3>
+      <p class="big" style="font-size:30px;color:var(--gold)">${qz.score}/${qz.qs.length}</p>
+      <p class="hint">+${qz.score*5} XP earned</p>
+      <button class="btn" onclick="Quiz()">Try another</button></div>`;
+    return;
+  }
+  const q=qz.qs[qz.i],w=q.w;
+  const dir=Math.random()<.5?'mg2en':'en2mg';
+  const prompt=dir==='mg2en'?w.mg:w.en;
+  const answer=dir==='mg2en'?w.en:w.mg;
+  let body=`<div class="progressbar"><i style="width:${qz.i/qz.qs.length*100}%"></i></div>
+    <p class="hint">Question ${qz.i+1} of ${qz.qs.length}</p>
+    <h3>${dir==='mg2en'?'What does this mean?':'How do you say this in Malagasy?'}</h3>
+    <p style="font-size:26px" class="mg">${esc(prompt)}
+      ${dir==='mg2en'?`<button class="speak" onclick="speak('${esc(w.mg).replace(/'/g,"\\'")}')">🔊</button>`:''}</p>`;
+
+  if(q.type==='mc'){
+    const others=shuffle(ALL.filter(x=>x.mg!==w.mg)).slice(0,3);
+    const opts=shuffle([w,...others]).map(o=>dir==='mg2en'?o.en:o.mg);
+    body+=`<div id="opts">`+opts.map(o=>`<button class="quizopt" onclick="answerMC(this,'${esc(o).replace(/'/g,"\\'")}','${esc(answer).replace(/'/g,"\\'")}')">${esc(o)}</button>`).join("")+`</div>`;
+  }else{
+    body+=`<input class="typed" id="typedAns" placeholder="Type your answer..." onkeydown="if(event.key==='Enter')answerType('${esc(answer).replace(/'/g,"\\'")}')">
+      <button class="btn" onclick="answerType('${esc(answer).replace(/'/g,"\\'")}')">Check</button>`;
+  }
+  body+=`<div class="feedback" id="fb"></div>`;
+  a.innerHTML=body;
+  const t=$("#typedAns");if(t)t.focus();
+}
+window.answerMC=(btn,chosen,answer)=>{
+  document.querySelectorAll(".quizopt").forEach(b=>b.disabled=true);
+  S.answered++;
+  if(chosen===answer){btn.classList.add("correct");qz.score++;S.correct++;fb(true,"Marina! (Correct)")}
+  else{btn.classList.add("wrong");
+    document.querySelectorAll(".quizopt").forEach(b=>{if(b.textContent===answer)b.classList.add("correct")});
+    fb(false,"Answer: "+answer)}
+  save();
+};
+window.answerType=answer=>{
+  const inp=$("#typedAns");if(!inp||inp.disabled)return;
+  inp.disabled=true;S.answered++;
+  if(norm(inp.value)===norm(answer)){qz.score++;S.correct++;fb(true,"Marina! (Correct)")}
+  else{fb(false,`Not quite. Answer: <b>${esc(answer)}</b>`)}
+  save();
+};
+function fb(ok,msg){
+  const f=$("#fb");f.className="feedback show "+(ok?'ok':'no');
+  f.innerHTML=msg+`<div style="margin-top:8px"><button class="btn ghost" onclick="qz.i++;drawQ()">Next →</button></div>`;
+}
+
+/* ==================== LISTENING ==================== */
+let ls=null;
+function Listen(){
+  if(!('speechSynthesis'in window)){
+    view.innerHTML=`<div class="card"><h2>🎧 Listening</h2><div class="notice">Your browser doesn't support speech playback. Try Chrome, Edge, or Safari.</div></div>`;return;
+  }
+  view.innerHTML=`<div class="card">
+    <h2>🎧 Listening</h2>
+    <p>Listen to a Malagasy word, then pick what you heard. Trains your ear for the sounds.</p>
+    <div class="notice">Note: most browsers lack a native Malagasy voice, so playback uses the closest available voice. Use it as a pronunciation guide alongside the phonetic spellings.</div>
+    <div class="row-flex" id="lpick"></div>
+    <div id="lArea" style="margin-top:18px"></div>
+  </div>`;
+  const lp=$("#lpick");
+  [["Level 1",1],["Level 2",2],["Level 3",3],["Mixed",0]].forEach(([n,lv])=>{
+    const b=document.createElement("button");b.className="btn ghost";b.textContent=n;
+    b.onclick=()=>{const pool=lv?ALL.filter(w=>w.level===lv):ALL;ls={qs:shuffle(pool).slice(0,8),i:0,score:0};drawL()};lp.appendChild(b);
+  });
+}
+function drawL(){
+  const a=$("#lArea");
+  if(ls.i>=ls.qs.length){
+    addXP(ls.score*4);
+    a.innerHTML=`<div class="center"><h3>Done! ${ls.score}/${ls.qs.length} 🎧</h3><p class="hint">+${ls.score*4} XP</p>
+      <button class="btn" onclick="Listen()">Again</button></div>`;return;
+  }
+  const w=ls.qs[ls.i];
+  const opts=shuffle([w,...shuffle(ALL.filter(x=>x.mg!==w.mg)).slice(0,3)]);
+  a.innerHTML=`<div class="progressbar"><i style="width:${ls.i/ls.qs.length*100}%"></i></div>
+    <p class="hint">${ls.i+1} of ${ls.qs.length}</p>
+    <div class="center"><button class="btn" onclick="speak('${esc(w.mg).replace(/'/g,"\\'")}')">▶ Play sound</button>
+    <p class="hint">Tap play, then choose the word</p></div>
+    <div id="lopts">`+opts.map(o=>`<button class="quizopt" onclick="answerL(this,'${esc(o.mg).replace(/'/g,"\\'")}','${esc(w.mg).replace(/'/g,"\\'")}')">
+      <span class="mg">${esc(o.mg)}</span> <span class="en">— ${esc(o.en)}</span></button>`).join("")+`</div>
+    <div class="feedback" id="lfb"></div>`;
+  setTimeout(()=>speak(w.mg),250);
+}
+window.answerL=(btn,chosen,correct)=>{
+  document.querySelectorAll("#lopts .quizopt").forEach(b=>b.disabled=true);
+  S.answered++;
+  const f=$("#lfb");
+  if(chosen===correct){btn.classList.add("correct");ls.score++;S.correct++;f.className="feedback show ok";f.innerHTML="Marina!"}
+  else{btn.classList.add("wrong");
+    document.querySelectorAll("#lopts .quizopt").forEach(b=>{if(b.querySelector('.mg').textContent===correct)b.classList.add("correct")});
+    f.className="feedback show no";f.innerHTML="It was: <b>"+correct+"</b>"}
+  f.innerHTML+=`<div style="margin-top:8px"><button class="btn ghost" onclick="ls.i++;drawL()">Next →</button></div>`;
+  save();
+};
+
+/* ==================== SPEAKING ==================== */
+let sp=null,recog=null;
+function Speak(){
+  if(!SR){
+    view.innerHTML=`<div class="card"><h2>🎤 Speaking</h2>
+      <div class="notice">Speech recognition isn't available in this browser. It works best in <b>Google Chrome</b> on desktop/Android. You can still listen and shadow-repeat each phrase below.</div>
+      <div id="sList"></div></div>`;
+    fillShadow();return;
+  }
+  view.innerHTML=`<div class="card">
+    <h2>🎤 Speaking Practice</h2>
+    <p>See a phrase, hear it, then tap the mic and say it out loud. We'll check how close you got.</p>
+    <div class="notice">Browsers don't offer a Malagasy speech model, so recognition uses a close-match scorer (it compares the sounds it hears against the target). Treat the score as a guide, not a grade — the goal is confident repetition.</div>
+    <div class="row-flex" id="spick"></div>
+    <div id="sArea" style="margin-top:18px"></div>
+  </div>`;
+  const sp2=$("#spick");
+  [["Level 1",1],["Level 2",2],["Level 3",3]].forEach(([n,lv])=>{
+    const b=document.createElement("button");b.className="btn ghost";b.textContent=n;
+    b.onclick=()=>{sp={qs:shuffle(ALL.filter(w=>w.level===lv)).slice(0,8),i:0,score:0};drawS()};sp2.appendChild(b);
+  });
+}
+function fillShadow(){
+  const el=$("#sList");if(!el)return;
+  el.innerHTML="<h3>Shadow these phrases</h3>"+ALL.slice(0,20).map(w=>
+    `<div class="row-flex" style="border-bottom:1px solid var(--line);padding:8px 0">
+      <button class="speak" onclick="speak('${esc(w.mg).replace(/'/g,"\\'")}')">🔊</button>
+      <span class="mg">${esc(w.mg)}</span><span class="ph">${esc(w.ph)}</span><span class="en">— ${esc(w.en)}</span></div>`).join("");
+}
+function drawS(){
+  const a=$("#sArea");
+  if(sp.i>=sp.qs.length){
+    addXP(sp.score*5);
+    a.innerHTML=`<div class="center"><h3>Speaking set done! 🎤</h3><p class="hint">Good reps earned +${sp.score*5} XP</p>
+      <button class="btn" onclick="Speak()">Again</button></div>`;return;
+  }
+  const w=sp.qs[sp.i];
+  a.innerHTML=`<div class="progressbar"><i style="width:${sp.i/sp.qs.length*100}%"></i></div>
+    <p class="hint">${sp.i+1} of ${sp.qs.length}</p>
+    <div class="center">
+      <p style="font-size:28px" class="mg">${esc(w.mg)}</p>
+      <p class="ph">${esc(w.ph)}</p><p class="en">${esc(w.en)}</p>
+      <button class="speak" onclick="speak('${esc(w.mg).replace(/'/g,"\\'")}')">🔊 Hear it</button>
+      <div style="margin:18px 0"><button class="mic" id="micBtn" onclick="startRec('${esc(w.mg).replace(/'/g,"\\'")}')">🎤</button></div>
+      <p class="hint" id="micHint">Tap the mic and say the phrase</p>
+    </div>
+    <div class="feedback" id="sfb"></div>`;
+}
+window.startRec=target=>{
+  const btn=$("#micBtn"),hint=$("#micHint");
+  try{recog=new SR()}catch(e){return}
+  recog.lang='fr-FR'; // closest phonetic model available in most browsers
+  recog.interimResults=false;recog.maxAlternatives=3;
+  btn.classList.add("listening");hint.textContent="Listening... speak now";
+  recog.onresult=e=>{
+    let heard=[];for(let i=0;i<e.results[0].length;i++)heard.push(e.results[0][i].transcript);
+    scoreSpeech(heard,target);
+  };
+  recog.onerror=()=>{btn.classList.remove("listening");hint.textContent="Didn't catch that — tap to retry";};
+  recog.onend=()=>{btn.classList.remove("listening")};
+  recog.start();
+};
+function scoreSpeech(heardArr,target){
+  const t=norm(target);
+  let best=0;
+  heardArr.forEach(h=>{best=Math.max(best,similarity(norm(h),t))});
+  const pct=Math.round(best*100);
+  S.answered++;
+  const f=$("#sfb");
+  if(pct>=55){sp.score++;S.correct++;f.className="feedback show ok";
+    f.innerHTML=`Nicely done — about <b>${pct}%</b> match. (Heard: “${esc(heardArr[0]||'')}”)`;}
+  else{f.className="feedback show no";
+    f.innerHTML=`Match ~${pct}%. Listen again and try to round the vowels. (Heard: “${esc(heardArr[0]||'')}”)`;}
+  f.innerHTML+=`<div style="margin-top:8px"><button class="btn ghost" onclick="sp.i++;drawS()">Next →</button>
+    <button class="btn" onclick="startRec('${esc(target).replace(/'/g,"\\'")}')">Retry</button></div>`;
+  save();
+}
+/* Dice-coefficient string similarity on bigrams */
+function similarity(a,b){
+  if(a===b)return 1;if(a.length<2||b.length<2)return 0;
+  const bg=s=>{const m=new Map();for(let i=0;i<s.length-1;i++){const g=s.substr(i,2);m.set(g,(m.get(g)||0)+1)}return m};
+  const A=bg(a),B=bg(b);let inter=0;
+  A.forEach((c,g)=>{if(B.has(g))inter+=Math.min(c,B.get(g))});
+  return 2*inter/(a.length-1+b.length-1);
+}
+
+/* ==================== TEST ==================== */
+let ts=null;
+function Test(){
+  view.innerHTML=`<div class="card">
+    <h2>🏆 Level Tests</h2>
+    <p>Each level test has 10 mixed questions. Score 70% or higher to pass and earn a badge. Tests pull from everything in that level.</p>
+    <div class="lessonlist" id="tpick"></div>
+    <div id="tArea" style="margin-top:18px"></div>
+  </div>`;
+  const tp=$("#tpick");
+  [1,2,3].forEach(lv=>{
+    const passed=S.testPass["L"+lv];
+    const d=document.createElement("div");d.className="ltile";d.onclick=()=>startTest(lv);
+    d.innerHTML=`${passed?'<span class="done">✓</span>':''}<div class="ico">${["","🥉","🥈","🥇"][lv]}</div>
+      <h4>Level ${lv} Test</h4><small>${passed?'Passed — '+passed+'%':'10 questions · pass 70%'}</small>`;
+    tp.appendChild(d);
+  });
+}
+function startTest(lv){
+  const pool=ALL.filter(w=>w.level<=lv); // cumulative
+  ts={lv,qs:shuffle(pool).slice(0,10).map((w,i)=>({w,type:i%2?'type':'mc'})),i:0,score:0};
+  drawT();
+}
+function drawT(){
+  const a=$("#tArea");
+  if(ts.i>=ts.qs.length){
+    const pct=Math.round(ts.score/ts.qs.length*100);
+    const pass=pct>=70;
+    if(pass&&(!S.testPass["L"+ts.lv]||pct>S.testPass["L"+ts.lv])){S.testPass["L"+ts.lv]=pct}
+    addXP(ts.score*8+(pass?30:0));
+    a.innerHTML=`<div class="center">
+      <h3>${pass?'PASSED! 🎉 Manana mari-pankasitrahana ianao!':'Not yet — try again'}</h3>
+      <p style="font-size:34px;color:${pass?'var(--good)':'var(--bad)'}">${pct}%</p>
+      <p class="hint">${ts.score}/${ts.qs.length} correct · +${ts.score*8+(pass?30:0)} XP${pass?' (incl. pass bonus)':''}</p>
+      <button class="btn" onclick="Test()">Back to tests</button></div>`;
+    return;
+  }
+  const q=ts.qs[ts.i],w=q.w;
+  const dir=Math.random()<.5?'mg2en':'en2mg';
+  const prompt=dir==='mg2en'?w.mg:w.en, answer=dir==='mg2en'?w.en:w.mg;
+  let body=`<div class="progressbar"><i style="width:${ts.i/ts.qs.length*100}%"></i></div>
+    <p class="hint">Level ${ts.lv} Test · Question ${ts.i+1}/${ts.qs.length} · Score ${ts.score}</p>
+    <h3>${dir==='mg2en'?'Translate to English':'Translate to Malagasy'}</h3>
+    <p style="font-size:24px" class="mg">${esc(prompt)}</p>`;
+  if(q.type==='mc'){
+    const opts=shuffle([w,...shuffle(ALL.filter(x=>x.mg!==w.mg)).slice(0,3)]).map(o=>dir==='mg2en'?o.en:o.mg);
+    body+=`<div id="topts">`+opts.map(o=>`<button class="quizopt" onclick="answerT(this,'${esc(o).replace(/'/g,"\\'")}','${esc(answer).replace(/'/g,"\\'")}',true)">${esc(o)}</button>`).join("")+`</div>`;
+  }else{
+    body+=`<input class="typed" id="tAns" placeholder="Type answer..." onkeydown="if(event.key==='Enter')answerT(null,this.value,'${esc(answer).replace(/'/g,"\\'")}',false)">
+      <button class="btn" onclick="answerT(null,document.getElementById('tAns').value,'${esc(answer).replace(/'/g,"\\'")}',false)">Check</button>`;
+  }
+  body+=`<div class="feedback" id="tfb"></div>`;
+  a.innerHTML=body;const t=$("#tAns");if(t)t.focus();
+}
+window.answerT=(btn,chosen,answer,isMC)=>{
+  const f=$("#tfb");S.answered++;
+  let ok;
+  if(isMC){
+    document.querySelectorAll("#topts .quizopt").forEach(b=>b.disabled=true);
+    ok=chosen===answer;
+    if(ok)btn.classList.add("correct");
+    else{btn.classList.add("wrong");document.querySelectorAll("#topts .quizopt").forEach(b=>{if(b.textContent===answer)b.classList.add("correct")})}
+  }else{
+    const inp=$("#tAns");if(inp.disabled)return;inp.disabled=true;
+    ok=norm(chosen)===norm(answer);
+  }
+  if(ok){ts.score++;S.correct++;f.className="feedback show ok";f.innerHTML="Marina!"}
+  else{f.className="feedback show no";f.innerHTML="Answer: <b>"+esc(answer)+"</b>"}
+  f.innerHTML+=`<div style="margin-top:8px"><button class="btn ghost" onclick="ts.i++;drawT()">Next →</button></div>`;
+  save();
+};
+
+/* ==================== PROGRESS ==================== */
+function Progress(){
+  const lv=levelFromXP(S.xp);
+  const acc=S.answered?Math.round(S.correct/S.answered*100):0;
+  const lessonsDone=Object.keys(S.done).length;
+  const badges=[
+    ["first","🌱","First Steps","Earn 50 XP"],
+    ["half","📚","Halfway","Finish 6 lessons"],
+    ["allLessons","🎓","Scholar","Finish all lessons"],
+    ["tested","🏅","Tested","Pass 3 level tests"],
+    ["fifty","💪","Fifty Club","50 correct answers"]
+  ];
+  view.innerHTML=`<div class="card">
+    <h2>📊 Your Progress</h2>
+    <div class="scoreboard">
+      <div class="stat"><div class="n">${S.xp}</div><div class="l">Total XP</div></div>
+      <div class="stat"><div class="n">${lv}</div><div class="l">Level</div></div>
+      <div class="stat"><div class="n">${lessonsDone}/${CURRICULUM.length}</div><div class="l">Lessons</div></div>
+      <div class="stat"><div class="n">${acc}%</div><div class="l">Accuracy</div></div>
+      <div class="stat"><div class="n">${S.correct}</div><div class="l">Correct</div></div>
+    </div>
+    <h3>Test results</h3>
+    <p>${[1,2,3].map(l=>`Level ${l}: <b style="color:${S.testPass['L'+l]?'var(--good)':'var(--muted)'}">${S.testPass['L'+l]?S.testPass['L'+l]+'% ✓':'not passed'}</b>`).join(" &nbsp;·&nbsp; ")}</p>
+    <h3>Quiz best scores</h3>
+    <p>${[1,2,3].map(l=>`Level ${l}: <b>${S.quizBest['L'+l]?S.quizBest['L'+l]+'%':'—'}</b>`).join(" &nbsp;·&nbsp; ")}</p>
+    <h3>Badges</h3>
+    <div>${badges.map(b=>`<span class="badge ${S.badges[b[0]]?'earned':''}" title="${b[3]}">${b[1]} ${b[2]}${S.badges[b[0]]?' ✓':''}</span>`).join("")}</div>
+    <div style="margin-top:20px"><button class="btn ghost" onclick="resetAll()">Reset all progress</button></div>
+  </div>`;
+}
+window.resetAll=()=>{if(confirm("Reset all progress and XP?")){S=fresh();save();Progress()}};
+
+/* -------------------- BOOT -------------------- */
+renderHeader();
+Learn();
+</script>
+</body>
+</html>
